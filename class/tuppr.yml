@@ -22,5 +22,5 @@ parameters:
         helm_values: ${tuppr:helm_values}
         helm_params:
           name: tuppr
-          namespace: ${tuppr:namespace}
+          namespace: ${tuppr:namespace:name}
         output_path: tuppr/01_helm_chart

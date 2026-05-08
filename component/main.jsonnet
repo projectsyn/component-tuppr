@@ -30,10 +30,10 @@ local kubernetesUpgrades = com.generateResources(params.kubernetes_upgrades, lib
 
 // Define outputs below
 {
-  '00_namespace': kube.Namespace(params.namespace) {
+  '00_namespace': kube.Namespace(params.namespace.name) {
     metadata+: {
-      annotations+: params.namespace_annotations,
-      labels+: params.namespace_labels,
+      annotations+: params.namespace.annotations,
+      labels+: params.namespace.labels,
     },
   },
   [if params.rbac.aggregated_cluster_reader then '10_cluster_role']:

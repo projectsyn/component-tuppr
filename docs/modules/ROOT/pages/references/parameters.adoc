@@ -11,17 +11,44 @@ The resource parameters (`talos_upgrades`, `kubernetes_upgrades`) follow the sam
 * Values are processed using https://syn.tools/commodore/reference/commodore-libjsonnet.html#_generateresourcesresources_resourcefn[`com.generateResources()`], which supports deep-merging and setting values to `null` for removal
 ====
 
+[IMPORTANT]
+====
+tuppr requires the Talos API to be accessible from within the cluster.
+The following patch must be applied to your control-plane machine configs:
+
+[source,yaml]
+----
+machine:
+  features:
+    kubernetesTalosAPIAccess:
+      allowedKubernetesNamespaces:
+        - syn-tuppr
+      allowedRoles:
+        - os:admin
+      enabled: true
+----
+
+Without this, the tuppr controller can't issue Talos API calls to perform upgrades.
+====
+
 
 == `namespace`
+
+[horizontal]
+type:: dictionary
+default:: https://github.com/projectsyn/component-tuppr/blob/master/class/defaults.yml[See `class/defaults.yml`]
+
+Configures the namespace in which to deploy this component.
+
+=== `namespace.name`
 
 [horizontal]
 type:: string
 default:: `syn-tuppr`
 
-The namespace in which to deploy this component.
+The namespace name.
 
-
-== `namespace_labels`
+=== `namespace.labels`
 
 [horizontal]
 type:: dictionary
@@ -29,8 +56,7 @@ default:: `{}`
 
 Additional labels to add to the component's namespace.
 
-
-== `namespace_annotations`
+=== `namespace.annotations`
 
 [horizontal]
 type:: dictionary
@@ -76,7 +102,7 @@ talos_upgrades:
 <2> The metadata of the resource (optional). Use `namespace` to override the default namespace.
 <3> The spec of the resource (required).
 
-Defines https://github.com/home-operations/tuppr[TalosUpgrade] resources.
+Defines https://github.com/home-operations/tuppr/blob/main/api/v1alpha1/talosupgrade_types.go[TalosUpgrade] resources.
 Each TalosUpgrade manages automated upgrades of Talos Linux nodes with configurable parallelism, health checks, drain configuration, and maintenance windows.
 
 Key spec fields:
@@ -118,7 +144,7 @@ kubernetes_upgrades:
 <2> The metadata of the resource (optional). Use `namespace` to override the default namespace.
 <3> The spec of the resource (required).
 
-Defines https://github.com/home-operations/tuppr[KubernetesUpgrade] resources.
+Defines https://github.com/home-operations/tuppr/blob/main/api/v1alpha1/kubernetesupgrade_types.go[KubernetesUpgrade] resources.
 Each KubernetesUpgrade manages automated upgrades of Kubernetes components (apiserver, controller-manager, scheduler, proxy, kubelet).
 
 NOTE: Only one KubernetesUpgrade resource is allowed per cluster (enforced by a validating webhook).
@@ -160,8 +186,6 @@ Full configuration with both a Talos and Kubernetes upgrade resource:
 ----
 parameters:
   tuppr:
-    namespace: syn-tuppr
-
     talos_upgrades:
       talos:
         spec:
