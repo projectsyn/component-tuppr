@@ -15,6 +15,12 @@ parameters:
           - ${_base_directory}/component/main.jsonnet
         input_type: jsonnet
         output_path: tuppr/
+      # tuppr CRDs
+      - input_paths:
+          - ${_base_directory}/helmcharts/tuppr/${tuppr:charts:tuppr:version}/crds/tuppr.home-operations.com_talosupgrades.yaml
+          - ${_base_directory}/helmcharts/tuppr/${tuppr:charts:tuppr:version}/crds/tuppr.home-operations.com_kubernetesupgrades.yaml
+        input_type: copy
+        output_path: tuppr/01_crds
       # tuppr Helm chart
       - input_paths:
           - ${_base_directory}/helmcharts/tuppr/${tuppr:charts:tuppr:version}
@@ -23,4 +29,5 @@ parameters:
         helm_params:
           name: tuppr
           namespace: ${tuppr:namespace:name}
-        output_path: tuppr/01_helm_chart
+          include_crds: false
+        output_path: tuppr/02_helm_chart
