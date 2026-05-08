@@ -1,0 +1,72 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app.kubernetes.io/instance: tuppr
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: tuppr
+    app.kubernetes.io/version: 0.1.25
+    helm.sh/chart: tuppr-0.1.25
+  name: tuppr-webhook-service
+  namespace: syn-tuppr
+spec:
+  ports:
+    - name: webhook
+      port: 443
+      protocol: TCP
+      targetPort: 9443
+  selector:
+    app.kubernetes.io/instance: tuppr
+    app.kubernetes.io/name: tuppr
+---
+apiVersion: admissionregistration.k8s.io/v1
+kind: ValidatingWebhookConfiguration
+metadata:
+  labels:
+    app.kubernetes.io/instance: tuppr
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: tuppr
+    app.kubernetes.io/version: 0.1.25
+    helm.sh/chart: tuppr-0.1.25
+  name: tuppr-validating-webhook
+webhooks:
+  - admissionReviewVersions:
+      - v1
+    clientConfig:
+      service:
+        name: tuppr-webhook-service
+        namespace: syn-tuppr
+        path: /validate-tuppr-home-operations-com-v1alpha1-kubernetesupgrade
+    failurePolicy: Fail
+    name: vkubernetesupgrade.kb.io
+    rules:
+      - apiGroups:
+          - tuppr.home-operations.com
+        apiVersions:
+          - v1alpha1
+        operations:
+          - CREATE
+          - UPDATE
+        resources:
+          - kubernetesupgrades
+    sideEffects: None
+  - admissionReviewVersions:
+      - v1
+    clientConfig:
+      service:
+        name: tuppr-webhook-service
+        namespace: syn-tuppr
+        path: /validate-tuppr-home-operations-com-v1alpha1-talosupgrade
+    failurePolicy: Fail
+    name: vtalosupgrade.kb.io
+    rules:
+      - apiGroups:
+          - tuppr.home-operations.com
+        apiVersions:
+          - v1alpha1
+        operations:
+          - CREATE
+          - UPDATE
+        resources:
+          - talosupgrades
+    sideEffects: None

@@ -3,3 +3,20 @@ parameters:
     =_metadata:
       multi_tenant: true
     namespace: syn-tuppr
+
+    charts:
+      tuppr:
+        source: oci://ghcr.io/home-operations/charts/tuppr
+        version: 0.1.25
+
+    namespace_labels: {}
+    namespace_annotations: {}
+
+    # tuppr custom resources
+    talos_upgrades: {}
+    kubernetes_upgrades: {}
+
+    rbac:
+      aggregated_cluster_reader: true
+
+    helm_values: {}

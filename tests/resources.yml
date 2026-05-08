@@ -1,0 +1,27 @@
+parameters:
+  tuppr:
+    talos_upgrades:
+      talos:
+        spec:
+          healthChecks:
+            - apiVersion: v1
+              expr: 'status.conditions.exists(c, c.type == "Ready" && c.status == "True")'
+              kind: Node
+              timeout: 10m
+          policy:
+            rebootMode: powercycle
+          talos:
+            version: v1.13.0
+    kubernetes_upgrades:
+      kubernetes:
+        spec:
+          healthChecks:
+            - apiVersion: v1
+              expr: 'status.conditions.exists(c, c.type == "Ready" && c.status == "True")'
+              kind: Node
+              timeout: 10m
+          kubernetes:
+            version: v1.36.0
+    helm_values:
+      serviceMonitor:
+        enabled: true

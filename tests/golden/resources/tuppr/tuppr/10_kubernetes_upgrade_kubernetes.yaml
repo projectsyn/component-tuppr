@@ -1,0 +1,12 @@
+apiVersion: tuppr.home-operations.com/v1alpha1
+kind: KubernetesUpgrade
+metadata:
+  name: kubernetes
+spec:
+  healthChecks:
+    - apiVersion: v1
+      expr: status.conditions.exists(c, c.type == "Ready" && c.status == "True")
+      kind: Node
+      timeout: 10m
+  kubernetes:
+    version: v1.36.0
