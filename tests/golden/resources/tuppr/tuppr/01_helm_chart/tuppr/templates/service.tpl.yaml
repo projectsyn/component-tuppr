@@ -1,0 +1,21 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app.kubernetes.io/instance: tuppr
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: tuppr
+    app.kubernetes.io/version: 0.1.25
+    helm.sh/chart: tuppr-0.1.25
+  name: tuppr-metrics-service
+  namespace: syn-tuppr
+spec:
+  ports:
+    - name: metrics
+      port: 8080
+      protocol: TCP
+      targetPort: metrics
+  selector:
+    app.kubernetes.io/instance: tuppr
+    app.kubernetes.io/name: tuppr
+  type: ClusterIP

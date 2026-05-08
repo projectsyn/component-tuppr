@@ -1,5 +1,7 @@
-= Kubernetes controller to upgrade Talos and Kubernetes 
+= tuppr
 
-tuppr is a Commodore component to manage Kubernetes controller to upgrade Talos and Kubernetes .
+tuppr is a Commodore component to manage https://github.com/home-operations/tuppr[tuppr], a Kubernetes controller for automated Talos Linux and Kubernetes upgrades.
+
+The component deploys the tuppr controller via its Helm chart and provides parameters for managing `TalosUpgrade` and `KubernetesUpgrade` custom resources declaratively.
 
 See the xref:references/parameters.adoc[parameters] reference for further details.

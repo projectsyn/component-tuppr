@@ -4,7 +4,7 @@
   "checkout": "main",
   "context": {
     "cookiecutter": {
-      "name": "Kubernetes controller to upgrade Talos and Kubernetes ",
+      "name": "tuppr",
       "slug": "tuppr",
       "parameter_key": "tuppr",
       "test_cases": "defaults",

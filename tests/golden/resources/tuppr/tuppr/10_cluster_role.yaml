@@ -1,0 +1,15 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  labels:
+    rbac.authorization.k8s.io/aggregate-to-cluster-reader: 'true'
+  name: tuppr-crds-cluster-reader
+rules:
+  - apiGroups:
+      - tuppr.home-operations.com
+    resources:
+      - '*'
+    verbs:
+      - get
+      - list
+      - watch

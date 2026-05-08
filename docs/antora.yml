@@ -1,5 +1,5 @@
 name: tuppr
-title: Kubernetes controller to upgrade Talos and Kubernetes 
+title: tuppr
 version: master
 start_page: ROOT:index.adoc
 nav:

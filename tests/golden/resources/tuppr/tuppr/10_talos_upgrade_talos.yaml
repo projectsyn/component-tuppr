@@ -1,0 +1,14 @@
+apiVersion: tuppr.home-operations.com/v1alpha1
+kind: TalosUpgrade
+metadata:
+  name: talos
+spec:
+  healthChecks:
+    - apiVersion: v1
+      expr: status.conditions.exists(c, c.type == "Ready" && c.status == "True")
+      kind: Node
+      timeout: 10m
+  policy:
+    rebootMode: powercycle
+  talos:
+    version: v1.13.0

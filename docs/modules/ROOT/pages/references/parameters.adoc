@@ -2,18 +2,217 @@
 
 The parent key for all of the following parameters is `tuppr`.
 
+[NOTE]
+====
+The resource parameters (`talos_upgrades`, `kubernetes_upgrades`) follow the same pattern:
+
+* Dictionary keys are used as `metadata.name`
+* Resources are created in the component's namespace by default (via ArgoCD), overridable via `metadata.namespace`
+* Values are processed using https://syn.tools/commodore/reference/commodore-libjsonnet.html#_generateresourcesresources_resourcefn[`com.generateResources()`], which supports deep-merging and setting values to `null` for removal
+====
+
+[IMPORTANT]
+====
+tuppr requires the Talos API to be accessible from within the cluster.
+The following patch must be applied to your control-plane machine configs:
+
+[source,yaml]
+----
+machine:
+  features:
+    kubernetesTalosAPIAccess:
+      allowedKubernetesNamespaces:
+        - syn-tuppr
+      allowedRoles:
+        - os:admin
+      enabled: true
+----
+
+Without this, the tuppr controller can't issue Talos API calls to perform upgrades.
+====
+
+
 == `namespace`
+
+[horizontal]
+type:: dictionary
+default:: https://github.com/projectsyn/component-tuppr/blob/master/class/defaults.yml[See `class/defaults.yml`]
+
+Configures the namespace in which to deploy this component.
+
+=== `namespace.name`
 
 [horizontal]
 type:: string
 default:: `syn-tuppr`
 
-The namespace in which to deploy this component.
+The namespace name.
+
+=== `namespace.labels`
+
+[horizontal]
+type:: dictionary
+default:: `{}`
+
+Additional labels to add to the component's namespace.
+
+=== `namespace.annotations`
+
+[horizontal]
+type:: dictionary
+default:: `{}`
+
+Additional annotations to add to the component's namespace.
+
+
+== `charts`
+
+[horizontal]
+type:: dictionary
+default:: See https://github.com/projectsyn/component-tuppr/blob/master/class/defaults.yml[`class/defaults.yml`]
+
+The Helm chart source and version for the tuppr controller.
+
+
+== `talos_upgrades`
+
+[horizontal]
+type:: dictionary
+default:: `{}`
+example::
++
+[source,yaml]
+----
+talos_upgrades:
+  talos: <1>
+    metadata: <2>
+      namespace: syn-tuppr
+    spec: <3>
+      talos:
+        version: v1.13.0
+      policy:
+        rebootMode: powercycle
+      healthChecks:
+        - apiVersion: v1
+          kind: Node
+          expr: 'status.conditions.exists(c, c.type == "Ready" && c.status == "True")'
+          timeout: 10m
+----
+<1> The key is used as `metadata.name` of the TalosUpgrade resource.
+<2> The metadata of the resource (optional). Use `namespace` to override the default namespace.
+<3> The spec of the resource (required).
+
+Defines https://github.com/home-operations/tuppr/blob/main/api/v1alpha1/talosupgrade_types.go[TalosUpgrade] resources.
+Each TalosUpgrade manages automated upgrades of Talos Linux nodes with configurable parallelism, health checks, drain configuration, and maintenance windows.
+
+Key spec fields:
+
+* `talos.version` -- target Talos version (semver)
+* `policy` -- upgrade behavior: `rebootMode` (default/powercycle), `force`, `debug`, `stage`, `placement` (hard/soft), `timeout`
+* `parallelism` -- number of nodes to upgrade concurrently (default: 1)
+* `drain` -- pod eviction settings before upgrade
+* `nodeSelector` -- label-based node filtering
+* `healthChecks` -- health checks between node upgrades using CEL expressions with `apiVersion`, `kind`, `expr`, and `timeout`
+* `maintenance` -- maintenance window configuration
+* `hooks` -- pre/post-upgrade job definitions
+* `talosctl.image` -- override talosctl image (defaults to `ghcr.io/siderolabs/talosctl`)
+
+
+== `kubernetes_upgrades`
+
+[horizontal]
+type:: dictionary
+default:: `{}`
+example::
++
+[source,yaml]
+----
+kubernetes_upgrades:
+  kubernetes: <1>
+    metadata: <2>
+      namespace: syn-tuppr
+    spec: <3>
+      kubernetes:
+        version: v1.36.0
+      healthChecks:
+        - apiVersion: v1
+          kind: Node
+          expr: 'status.conditions.exists(c, c.type == "Ready" && c.status == "True")'
+          timeout: 10m
+----
+<1> The key is used as `metadata.name` of the KubernetesUpgrade resource.
+<2> The metadata of the resource (optional). Use `namespace` to override the default namespace.
+<3> The spec of the resource (required).
+
+Defines https://github.com/home-operations/tuppr/blob/main/api/v1alpha1/kubernetesupgrade_types.go[KubernetesUpgrade] resources.
+Each KubernetesUpgrade manages automated upgrades of Kubernetes components (apiserver, controller-manager, scheduler, proxy, kubelet).
+
+NOTE: Only one KubernetesUpgrade resource is allowed per cluster (enforced by a validating webhook).
+
+Key spec fields:
+
+* `kubernetes.version` -- target Kubernetes version
+* `kubernetes.imageRepository` -- private registry for Kubernetes images (optional)
+* `kubernetes.hostAliases` -- host alias entries (optional)
+* `healthChecks` -- health checks using CEL expressions with `apiVersion`, `kind`, `expr`, and `timeout`
+* `maintenance` -- maintenance window configuration
+* `talosctl.image` -- override talosctl image (defaults to `ghcr.io/siderolabs/talosctl`)
+
+
+== `rbac.aggregated_cluster_reader`
+
+[horizontal]
+type:: bool
+default:: `true`
+
+Whether to create a ClusterRole aggregated to `cluster-reader` that grants read access to tuppr CRDs.
+
+
+== `helm_values`
+
+[horizontal]
+type:: dictionary
+default:: `{}`
+
+Helm values to pass to the tuppr Helm chart.
+See the https://github.com/home-operations/tuppr/blob/main/charts/tuppr/values.yaml[upstream `values.yaml`] for available options.
 
 
 == Example
 
+Full configuration with both a Talos and Kubernetes upgrade resource:
+
 [source,yaml]
 ----
-namespace: example-namespace
+parameters:
+  tuppr:
+    talos_upgrades:
+      talos:
+        spec:
+          talos:
+            version: v1.13.0
+          policy:
+            rebootMode: powercycle
+          healthChecks:
+            - apiVersion: v1
+              kind: Node
+              expr: 'status.conditions.exists(c, c.type == "Ready" && c.status == "True")'
+              timeout: 10m
+
+    kubernetes_upgrades:
+      kubernetes:
+        spec:
+          kubernetes:
+            version: v1.36.0
+          healthChecks:
+            - apiVersion: v1
+              kind: Node
+              expr: 'status.conditions.exists(c, c.type == "Ready" && c.status == "True")'
+              timeout: 10m
+
+    helm_values:
+      serviceMonitor:
+        enabled: true
+      prometheusRule:
+        enabled: true
 ----

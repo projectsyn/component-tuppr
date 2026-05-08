@@ -1,6 +1,6 @@
-# Commodore Component: Kubernetes controller to upgrade Talos and Kubernetes 
+# Commodore Component: tuppr
 
-This is a [Commodore][commodore] Component for Kubernetes controller to upgrade Talos and Kubernetes .
+This is a [Commodore][commodore] Component for tuppr.
 
 This repository is part of Project Syn.
 For documentation on Project Syn and this component, see [syn.tools](https://syn.tools).

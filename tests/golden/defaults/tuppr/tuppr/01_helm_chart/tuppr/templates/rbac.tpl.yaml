@@ -1,0 +1,212 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  labels:
+    app.kubernetes.io/instance: tuppr
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: tuppr
+    app.kubernetes.io/version: 0.1.25
+    helm.sh/chart: tuppr-0.1.25
+  name: tuppr-manager-role
+rules:
+  - apiGroups:
+      - '*'
+    resources:
+      - '*'
+    verbs:
+      - get
+      - list
+      - watch
+  - apiGroups:
+      - ''
+    resources:
+      - events
+    verbs:
+      - create
+      - patch
+  - apiGroups:
+      - ''
+    resources:
+      - pods
+    verbs:
+      - get
+      - list
+      - delete
+  - apiGroups:
+      - ''
+    resources:
+      - pods
+    verbs:
+      - get
+      - list
+      - watch
+      - delete
+  - apiGroups:
+      - ''
+    resources:
+      - pods/eviction
+    verbs:
+      - create
+  - apiGroups:
+      - ''
+    resources:
+      - nodes
+    verbs:
+      - get
+      - list
+      - watch
+      - patch
+      - update
+  - apiGroups:
+      - ''
+    resources:
+      - secrets
+    verbs:
+      - get
+      - list
+      - watch
+  - apiGroups:
+      - batch
+    resources:
+      - jobs
+    verbs:
+      - create
+      - delete
+      - get
+      - list
+      - patch
+      - update
+      - watch
+  - apiGroups:
+      - tuppr.home-operations.com
+    resources:
+      - kubernetesupgrades
+      - talosupgrades
+    verbs:
+      - create
+      - delete
+      - get
+      - list
+      - patch
+      - update
+      - watch
+  - apiGroups:
+      - tuppr.home-operations.com
+    resources:
+      - kubernetesupgrades/finalizers
+      - talosupgrades/finalizers
+    verbs:
+      - update
+  - apiGroups:
+      - tuppr.home-operations.com
+    resources:
+      - kubernetesupgrades/status
+      - talosupgrades/status
+    verbs:
+      - get
+      - patch
+      - update
+  - apiGroups:
+      - ''
+    resources:
+      - secrets
+    verbs:
+      - create
+      - update
+      - patch
+      - get
+      - list
+      - watch
+  - apiGroups:
+      - admissionregistration.k8s.io
+    resources:
+      - validatingwebhookconfigurations
+    verbs:
+      - get
+      - list
+      - watch
+      - patch
+      - update
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  labels:
+    app.kubernetes.io/instance: tuppr
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: tuppr
+    app.kubernetes.io/version: 0.1.25
+    helm.sh/chart: tuppr-0.1.25
+  name: tuppr-manager-rolebinding
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: tuppr-manager-role
+subjects:
+  - kind: ServiceAccount
+    name: tuppr
+    namespace: syn-tuppr
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  labels:
+    app.kubernetes.io/instance: tuppr
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: tuppr
+    app.kubernetes.io/version: 0.1.25
+    helm.sh/chart: tuppr-0.1.25
+  name: tuppr-leader-election-role
+  namespace: syn-tuppr
+rules:
+  - apiGroups:
+      - ''
+    resources:
+      - configmaps
+    verbs:
+      - get
+      - list
+      - watch
+      - create
+      - update
+      - patch
+      - delete
+  - apiGroups:
+      - coordination.k8s.io
+    resources:
+      - leases
+    verbs:
+      - get
+      - list
+      - watch
+      - create
+      - update
+      - patch
+      - delete
+  - apiGroups:
+      - ''
+    resources:
+      - events
+    verbs:
+      - create
+      - patch
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  labels:
+    app.kubernetes.io/instance: tuppr
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: tuppr
+    app.kubernetes.io/version: 0.1.25
+    helm.sh/chart: tuppr-0.1.25
+  name: tuppr-leader-election-rolebinding
+  namespace: syn-tuppr
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: tuppr-leader-election-role
+subjects:
+  - kind: ServiceAccount
+    name: tuppr
+    namespace: syn-tuppr
