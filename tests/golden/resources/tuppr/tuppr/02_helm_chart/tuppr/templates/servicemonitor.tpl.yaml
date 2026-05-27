@@ -1,0 +1,21 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  labels:
+    app.kubernetes.io/instance: tuppr
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: tuppr
+    app.kubernetes.io/version: 0.1.37
+    helm.sh/chart: tuppr-0.1.37
+  name: tuppr
+  namespace: syn-tuppr
+spec:
+  endpoints:
+    - interval: 30s
+      path: /metrics
+      port: metrics
+      scrapeTimeout: 10s
+  selector:
+    matchLabels:
+      app.kubernetes.io/instance: tuppr
+      app.kubernetes.io/name: tuppr

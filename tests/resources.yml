@@ -23,5 +23,13 @@ parameters:
           kubernetes:
             version: v1.36.0
     helm_values:
-      serviceMonitor:
-        enabled: true
+      monitoring:
+        serviceMonitor:
+          enabled: true
+
+        prometheusRule:
+          enabled: true
+          additionalRuleLabels:
+            syn: "true"
+            syn_component: tuppr
+            syn_team: schedar
