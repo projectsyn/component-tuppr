@@ -5,8 +5,8 @@ metadata:
     app.kubernetes.io/instance: tuppr
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: tuppr
-    app.kubernetes.io/version: 0.1.35
-    helm.sh/chart: tuppr-0.1.35
+    app.kubernetes.io/version: 0.1.37
+    helm.sh/chart: tuppr-0.1.37
   name: tuppr-webhook-service
   namespace: syn-tuppr
 spec:
@@ -26,8 +26,8 @@ metadata:
     app.kubernetes.io/instance: tuppr
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: tuppr
-    app.kubernetes.io/version: 0.1.35
-    helm.sh/chart: tuppr-0.1.35
+    app.kubernetes.io/version: 0.1.37
+    helm.sh/chart: tuppr-0.1.37
   name: tuppr-validating-webhook
 webhooks:
   - admissionReviewVersions:
