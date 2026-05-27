@@ -5,8 +5,8 @@ metadata:
     app.kubernetes.io/instance: tuppr
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: tuppr
-    app.kubernetes.io/version: 0.1.35
-    helm.sh/chart: tuppr-0.1.35
+    app.kubernetes.io/version: 0.1.37
+    helm.sh/chart: tuppr-0.1.37
   name: tuppr
   namespace: syn-tuppr
 spec:
@@ -21,8 +21,8 @@ spec:
         app.kubernetes.io/instance: tuppr
         app.kubernetes.io/managed-by: Helm
         app.kubernetes.io/name: tuppr
-        app.kubernetes.io/version: 0.1.35
-        helm.sh/chart: tuppr-0.1.35
+        app.kubernetes.io/version: 0.1.37
+        helm.sh/chart: tuppr-0.1.37
     spec:
       containers:
         - args:
@@ -47,7 +47,7 @@ spec:
               valueFrom:
                 fieldRef:
                   fieldPath: spec.nodeName
-          image: ghcr.io/home-operations/tuppr:0.1.35
+          image: ghcr.io/home-operations/tuppr:0.1.37
           imagePullPolicy: IfNotPresent
           livenessProbe:
             httpGet:
