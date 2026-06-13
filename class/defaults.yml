@@ -10,7 +10,7 @@ parameters:
     charts:
       tuppr:
         source: oci://ghcr.io/home-operations/charts/tuppr
-        version: 0.1.37
+        version: 0.2.6
 
     # tuppr custom resources
     talos_upgrades: {}

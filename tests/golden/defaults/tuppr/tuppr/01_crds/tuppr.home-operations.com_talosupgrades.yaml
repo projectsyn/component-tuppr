@@ -68,29 +68,20 @@ spec:
             description: TalosUpgradeSpec defines the desired state of TalosUpgrade
             properties:
               drain:
-                description: Drain configuration for the node prior to upgrade
+                description: |-
+                  Drain configuration for the node prior to upgrade.
+                  Deprecated: Use Talos policy drain configuration instead.
                 properties:
-                  deleteLocalData:
-                    description: |-
-                      DeleteLocalData causes the drain to continue even if there are pods using emptyDir
-                      (local data that will be deleted when the node is drained).
-                    type: boolean
                   disableEviction:
                     description: DisableEviction forces drain to use delete, even
                       if eviction is supported.
                     type: boolean
-                  force:
-                    description: Force continues even if there are pods that do not
-                      declare a controller.
+                  enabled:
+                    description: Enabled drains the node before it is rebooted for
+                      upgrade.
                     type: boolean
-                  ignoreDaemonSets:
-                    description: IgnoreDaemonSets ignores DaemonSet-managed pods.
-                    type: boolean
-                  skipWaitForDeleteTimeout:
-                    description: |-
-                      SkipWaitForDeleteTimeout specifies that if a pod DeletionTimestamp is older than N seconds,
-                      skip waiting for the pod. Seconds must be greater than 0 to skip.
-                    type: integer
+                required:
+                - enabled
                 type: object
               healthChecks:
                 description: HealthChecks defines a list of CEL-based health checks
@@ -4800,15 +4791,25 @@ spec:
                     description: Force the upgrade (skip checks on etcd health and
                       members)
                     type: boolean
+                  nodrain:
+                    default: false
+                    description: NoDrain disables drain for the upgrade.
+                    type: boolean
                   placement:
-                    default: soft
+                    default: hard
                     description: |-
                       Placement controls how strictly upgrade jobs avoid the target node
-                      hard: required avoidance (job will fail if can't avoid target node)
+                      hard: required avoidance, degrades to preferred on single-node clusters
                       soft: preferred avoidance (job prefers to avoid but can run on target node)
                     enum:
                     - hard
                     - soft
+                    type: string
+                  priorityClassName:
+                    default: system-node-critical
+                    description: PriorityClassName for the upgrade job pod; set a
+                      preempting class to displace lower-priority pods under resource
+                      pressure.
                     type: string
                   rebootMode:
                     default: default
