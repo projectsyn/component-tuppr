@@ -5,8 +5,8 @@ metadata:
     app.kubernetes.io/instance: tuppr
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: tuppr
-    app.kubernetes.io/version: 0.1.37
-    helm.sh/chart: tuppr-0.1.37
+    app.kubernetes.io/version: 0.2.6
+    helm.sh/chart: tuppr-0.2.6
   name: tuppr
   namespace: syn-tuppr
 spec:
@@ -21,8 +21,8 @@ spec:
         app.kubernetes.io/instance: tuppr
         app.kubernetes.io/managed-by: Helm
         app.kubernetes.io/name: tuppr
-        app.kubernetes.io/version: 0.1.37
-        helm.sh/chart: tuppr-0.1.37
+        app.kubernetes.io/version: 0.2.6
+        helm.sh/chart: tuppr-0.2.6
     spec:
       containers:
         - args:
@@ -47,7 +47,11 @@ spec:
               valueFrom:
                 fieldRef:
                   fieldPath: spec.nodeName
-          image: ghcr.io/home-operations/tuppr:0.1.37
+            - name: CONTROLLER_POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+          image: ghcr.io/home-operations/tuppr@sha256:4f539ec06db87a669330faae85ed53567465f028f76d3b397b715e34b0f92d88
           imagePullPolicy: IfNotPresent
           livenessProbe:
             httpGet:
@@ -99,6 +103,9 @@ spec:
           operator: Exists
         - effect: NoSchedule
           key: node-role.kubernetes.io/control-plane
+          operator: Exists
+        - effect: NoSchedule
+          key: node.kubernetes.io/unschedulable
           operator: Exists
       volumes:
         - name: cert
