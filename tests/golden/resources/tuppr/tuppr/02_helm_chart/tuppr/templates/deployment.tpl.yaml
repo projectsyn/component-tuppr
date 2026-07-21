@@ -5,8 +5,8 @@ metadata:
     app.kubernetes.io/instance: tuppr
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: tuppr
-    app.kubernetes.io/version: 0.2.6
-    helm.sh/chart: tuppr-0.2.6
+    app.kubernetes.io/version: 0.2.9
+    helm.sh/chart: tuppr-0.2.9
   name: tuppr
   namespace: syn-tuppr
 spec:
@@ -21,14 +21,14 @@ spec:
         app.kubernetes.io/instance: tuppr
         app.kubernetes.io/managed-by: Helm
         app.kubernetes.io/name: tuppr
-        app.kubernetes.io/version: 0.2.6
-        helm.sh/chart: tuppr-0.2.6
+        app.kubernetes.io/version: 0.2.9
+        helm.sh/chart: tuppr-0.2.9
     spec:
       containers:
         - args:
             - --log-level=debug
             - --leader-elect=true
-            - --metrics-bind-address=:8080
+            - --metrics-bind-address=:8081
             - --health-probe-bind-address=:8081
             - --talosconfig-secret=tuppr-talosconfig
             - --metrics-secure=false
@@ -51,7 +51,7 @@ spec:
               valueFrom:
                 fieldRef:
                   fieldPath: metadata.name
-          image: ghcr.io/home-operations/tuppr@sha256:4f539ec06db87a669330faae85ed53567465f028f76d3b397b715e34b0f92d88
+          image: ghcr.io/home-operations/tuppr@sha256:ecb1aac857b3b406c3fba489984e7dd6d7349b3bcde28d63c2c6f42017bd6828
           imagePullPolicy: IfNotPresent
           livenessProbe:
             httpGet:
@@ -64,11 +64,8 @@ spec:
             - containerPort: 9443
               name: webhook-server
               protocol: TCP
-            - containerPort: 8080
-              name: metrics
-              protocol: TCP
             - containerPort: 8081
-              name: health
+              name: metrics
               protocol: TCP
           readinessProbe:
             httpGet:
@@ -95,6 +92,7 @@ spec:
       priorityClassName: system-node-critical
       securityContext:
         fsGroup: 65532
+        runAsGroup: 65532
         runAsNonRoot: true
         runAsUser: 65532
       serviceAccountName: tuppr

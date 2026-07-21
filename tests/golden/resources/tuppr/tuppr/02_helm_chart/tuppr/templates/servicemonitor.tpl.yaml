@@ -5,8 +5,8 @@ metadata:
     app.kubernetes.io/instance: tuppr
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: tuppr
-    app.kubernetes.io/version: 0.2.6
-    helm.sh/chart: tuppr-0.2.6
+    app.kubernetes.io/version: 0.2.9
+    helm.sh/chart: tuppr-0.2.9
   name: tuppr
   namespace: syn-tuppr
 spec:

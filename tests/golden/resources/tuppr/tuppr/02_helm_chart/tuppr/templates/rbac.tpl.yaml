@@ -5,8 +5,8 @@ metadata:
     app.kubernetes.io/instance: tuppr
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: tuppr
-    app.kubernetes.io/version: 0.2.6
-    helm.sh/chart: tuppr-0.2.6
+    app.kubernetes.io/version: 0.2.9
+    helm.sh/chart: tuppr-0.2.9
   name: tuppr-manager-role
 rules:
   - apiGroups:
@@ -135,8 +135,8 @@ metadata:
     app.kubernetes.io/instance: tuppr
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: tuppr
-    app.kubernetes.io/version: 0.2.6
-    helm.sh/chart: tuppr-0.2.6
+    app.kubernetes.io/version: 0.2.9
+    helm.sh/chart: tuppr-0.2.9
   name: tuppr-manager-rolebinding
 roleRef:
   apiGroup: rbac.authorization.k8s.io
@@ -154,8 +154,8 @@ metadata:
     app.kubernetes.io/instance: tuppr
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: tuppr
-    app.kubernetes.io/version: 0.2.6
-    helm.sh/chart: tuppr-0.2.6
+    app.kubernetes.io/version: 0.2.9
+    helm.sh/chart: tuppr-0.2.9
   name: tuppr-leader-election-role
   namespace: syn-tuppr
 rules:
@@ -198,8 +198,8 @@ metadata:
     app.kubernetes.io/instance: tuppr
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: tuppr
-    app.kubernetes.io/version: 0.2.6
-    helm.sh/chart: tuppr-0.2.6
+    app.kubernetes.io/version: 0.2.9
+    helm.sh/chart: tuppr-0.2.9
   name: tuppr-leader-election-rolebinding
   namespace: syn-tuppr
 roleRef:
