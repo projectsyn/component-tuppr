@@ -5,12 +5,13 @@ metadata:
     app.kubernetes.io/instance: tuppr
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: tuppr
-    app.kubernetes.io/version: 0.2.6
-    helm.sh/chart: tuppr-0.2.6
+    app.kubernetes.io/version: 0.5.4
+    helm.sh/chart: tuppr-0.5.4
   name: tuppr
   namespace: syn-tuppr
 spec:
   replicas: 1
+  revisionHistoryLimit: 10
   selector:
     matchLabels:
       app.kubernetes.io/instance: tuppr
@@ -21,17 +22,15 @@ spec:
         app.kubernetes.io/instance: tuppr
         app.kubernetes.io/managed-by: Helm
         app.kubernetes.io/name: tuppr
-        app.kubernetes.io/version: 0.2.6
-        helm.sh/chart: tuppr-0.2.6
+        app.kubernetes.io/version: 0.5.4
+        helm.sh/chart: tuppr-0.5.4
     spec:
       containers:
         - args:
             - --log-level=debug
             - --leader-elect=true
-            - --metrics-bind-address=:8080
-            - --health-probe-bind-address=:8081
+            - --metrics-bind-address=:8081
             - --talosconfig-secret=tuppr-talosconfig
-            - --metrics-secure=false
             - --metrics-service-name=tuppr-metrics-service
             - --webhook-config-name=tuppr-validating-webhook
             - --webhook-service-name=tuppr-webhook-service
@@ -51,12 +50,12 @@ spec:
               valueFrom:
                 fieldRef:
                   fieldPath: metadata.name
-          image: ghcr.io/home-operations/tuppr@sha256:4f539ec06db87a669330faae85ed53567465f028f76d3b397b715e34b0f92d88
+          image: ghcr.io/home-operations/tuppr@sha256:ab52e0bfbc04649f4da9c15516adbea3708c4710221187966b8e0b31b6186b60
           imagePullPolicy: IfNotPresent
           livenessProbe:
             httpGet:
               path: /healthz
-              port: 8081
+              port: metrics
             initialDelaySeconds: 15
             periodSeconds: 20
           name: manager
@@ -64,16 +63,13 @@ spec:
             - containerPort: 9443
               name: webhook-server
               protocol: TCP
-            - containerPort: 8080
-              name: metrics
-              protocol: TCP
             - containerPort: 8081
-              name: health
+              name: metrics
               protocol: TCP
           readinessProbe:
             httpGet:
               path: /readyz
-              port: 8081
+              port: metrics
             initialDelaySeconds: 5
             periodSeconds: 10
           resources: {}
@@ -95,8 +91,11 @@ spec:
       priorityClassName: system-node-critical
       securityContext:
         fsGroup: 65532
+        runAsGroup: 65532
         runAsNonRoot: true
         runAsUser: 65532
+        seccompProfile:
+          type: RuntimeDefault
       serviceAccountName: tuppr
       tolerations:
         - key: CriticalAddonsOnly
