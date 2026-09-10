@@ -18,9 +18,9 @@ local aggregatedClusterRole = {
   },
   rules: [
     {
-      apiGroups: [lib.apiGroup],
-      resources: ['*'],
-      verbs: ['get', 'list', 'watch'],
+      apiGroups: [ lib.apiGroup ],
+      resources: [ '*' ],
+      verbs: [ 'get', 'list', 'watch' ],
     },
   ],
 };
