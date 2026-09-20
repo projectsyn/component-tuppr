@@ -5,8 +5,8 @@ metadata:
     app.kubernetes.io/instance: tuppr
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: tuppr
-    app.kubernetes.io/version: 0.5.4
-    helm.sh/chart: tuppr-0.5.4
+    app.kubernetes.io/version: 0.5.7
+    helm.sh/chart: tuppr-0.5.7
   name: tuppr
   namespace: syn-tuppr
 spec:
@@ -22,12 +22,13 @@ spec:
         app.kubernetes.io/instance: tuppr
         app.kubernetes.io/managed-by: Helm
         app.kubernetes.io/name: tuppr
-        app.kubernetes.io/version: 0.5.4
-        helm.sh/chart: tuppr-0.5.4
+        app.kubernetes.io/version: 0.5.7
+        helm.sh/chart: tuppr-0.5.7
     spec:
       containers:
         - args:
-            - --log-level=debug
+            - --log-level=info
+            - --log-format=logfmt
             - --leader-elect=true
             - --metrics-bind-address=:8081
             - --talosconfig-secret=tuppr-talosconfig
@@ -50,7 +51,7 @@ spec:
               valueFrom:
                 fieldRef:
                   fieldPath: metadata.name
-          image: ghcr.io/home-operations/tuppr@sha256:ab52e0bfbc04649f4da9c15516adbea3708c4710221187966b8e0b31b6186b60
+          image: ghcr.io/home-operations/tuppr@sha256:28728edb8ec848db4500db612747f9007de0646c7f2340c0902c3b99dbb8e590
           imagePullPolicy: IfNotPresent
           livenessProbe:
             httpGet:
